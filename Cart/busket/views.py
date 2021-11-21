@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from store.models import product
 from .models import  buskett ,busketItems
 from django.core.exceptions import ObjectDoesNotExist
@@ -23,7 +23,10 @@ def add_Cart(request,product_id):
     cart.save()
     try:
         cart_item = busketItems.objects.get(product_busket_item=products,busket_item=cart)
+
         cart_item.quantity += 1
+
+
     except busketItems.DoesNotExist:
         cart_item = busketItems.objects.create(
             product_busket_item=products,
@@ -33,6 +36,26 @@ def add_Cart(request,product_id):
     cart_item.save()
     return redirect('busket')
 
+def remove_cart(request,product_id):
+    cart = buskett.objects.get(cart_id=_cart_id(request))
+    productt = get_object_or_404(product,id=product_id)
+    cartItem = busketItems.objects.get(product_busket_item=productt,busket_item=cart)
+    if cartItem.quantity > 1:
+        cartItem.quantity -= 1
+        cartItem.save()
+        return redirect('busket')
+    else:
+        cartItem.delete()
+        return redirect('busket')
+def remove_cart_item(request,product_id):
+    cart = buskett.objects.get(cart_id=_cart_id(request))
+    productt = get_object_or_404(product, id=product_id)
+    cartItem = busketItems.objects.get(product_busket_item=productt, busket_item=cart)
+    cartItem.delete()
+    return redirect('busket')
+
+
+
 
 
 
@@ -40,16 +63,20 @@ def busket(request,total=0,quantity=0,cart_items=None):
     try:
 
         cart = buskett.objects.get(cart_id=_cart_id(request))
-        cart_items = busketItems.objects.filter(product_busket_item=cart,busketItems_is_active=True)
-        for cart_itemm in cart_items:
-            total += cart_itemm.product_busket_item.product_price * cart_itemm.quantity
-            quantity += cart_itemm.quantity
+        cart_items = busketItems.objects.filter(busket_item=cart,busketItems_is_active=True)
+        for cart_item in cart_items:
+            quantity += cart_item.quantity
+            total += int(cart_item.product_busket_item.product_price) * int(cart_item.quantity)
+        tax = (0.2 * total)
+        Gtotal = total + tax
     except ObjectDoesNotExist:
         pass
     context ={
         'total':total,
         'quantity':quantity,
-        'cart_items':cart_items
+        'cart_items':cart_items,
+        'tax': tax,
+        'Gtotal':Gtotal
     }
 
     return render(request,'store/busket.html',context)

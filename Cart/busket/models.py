@@ -15,6 +15,8 @@ class busketItems(models.Model):
 	busket_item = models.ForeignKey(buskett,on_delete=models.CASCADE)
 	quantity = models.IntegerField()
 	busketItems_is_active = models.BooleanField(default=True)
+	def sub_total(self):
+		return self.product_busket_item.product_price * self.quantity
 	def __str__(self):
 		return self.product_busket_item
 
