@@ -14,6 +14,8 @@ class product(models.Model):
     product_created_date = models.DateTimeField(auto_now_add=True)
     product_modified_date = models.DateTimeField(auto_now=True)
     product_cat = models.ForeignKey(cat, on_delete=models.CASCADE)
+    # class meta:
+    #     ordering =[id]
     def get_url(self):
         return reverse('product_details',args=[self.product_cat.cat_slug,self.product_slug])
 

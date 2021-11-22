@@ -67,7 +67,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'cat.context.links'
+                'cat.context.links',
+                'busket.context_process.counter',
             ],
         },
     },

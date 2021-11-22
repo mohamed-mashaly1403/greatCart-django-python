@@ -67,7 +67,7 @@ def busket(request,total=0,quantity=0,cart_items=None):
         for cart_item in cart_items:
             quantity += cart_item.quantity
             total += int(cart_item.product_busket_item.product_price) * int(cart_item.quantity)
-        tax = (0.2 * total)
+        tax = (0.02 * total)
         Gtotal = total + tax
     except ObjectDoesNotExist:
         pass
