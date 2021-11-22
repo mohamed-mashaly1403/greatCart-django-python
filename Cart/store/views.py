@@ -4,6 +4,7 @@ from cat.models import cat
 from busket.models import busketItems,buskett
 from busket.views import _cart_id
 from django.core.paginator import EmptyPage,Paginator,PageNotAnInteger
+from django.db.models import Q
 def store(request,cat_slug=None):
     cate = None
     products = None
@@ -46,3 +47,17 @@ def product_details(request,cat_slug,product_slug):
     return render(request,'store/product_details.html',context)
 
 # Create your views here.
+def search(request):
+    if 'keyword' in request.GET:
+        keyword = request.GET['keyword']
+        if keyword != '':
+            products = product.objects.order_by('-product_created_date').filter(Q(product_desc__icontains= keyword) | Q(product_name__icontains= keyword))
+            productcount = products.count()
+        else:
+            products =''
+            productcount = 0
+    context = {
+        'products': products,
+        'products_count': productcount,
+    }
+    return render(request,'store/store.html',context)

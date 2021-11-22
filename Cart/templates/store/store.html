@@ -2,7 +2,11 @@
 {% block content %}
 <section class="section-pagetop bg">
 <div class="container">
-	<h2 class="title-page">Our Store</h2>
+	{% if 'search' in request.path%}
+		<h2 class="title-page">Search Results </h2>
+	{% else%}
+		<h2 class="title-page">Our Store</h2>
+	{% endif %}
 
 </div> <!-- container //  -->
 </section>
@@ -121,31 +125,35 @@
 </header><!-- sect-heading -->
 
 <div class="row">
-	{% for product in products %}
-	<div class="col-md-4">
-		<figure class="card card-product-grid">
-			<div class="img-wrap">
+	{%if products %}
+		{% for product in products %}
+		<div class="col-md-4">
+			<figure class="card card-product-grid">
+				<div class="img-wrap">
 
-				<a href="{{product.get_url}}"><img src={{product.product_img.url}}> </a>
+					<a href="{{product.get_url}}"><img src={{product.product_img.url}}> </a>
 
-			</div> <!-- img-wrap.// -->
-			<figcaption class="info-wrap">
-				<div class="fix-height">
-					<a href="{{product.get_url}}" class="title">{{product.product_name}}</a>
-					<div class="price-wrap mt-2">
-						<span class="price">${{product.product_price}}</span>
-					</div> <!-- price-wrap.// -->
-				</div>
-{% if  product.product_stock <= 0 %}
-<h5>out of stock</h5>
-				{% else %}
-				<a href="{% url 'addCart' product.id  %}" class="btn btn-block btn-primary">Add to Cart </a>
-				{% endif %}
+				</div> <!-- img-wrap.// -->
+				<figcaption class="info-wrap">
+					<div class="fix-height">
+						<a href="{{product.get_url}}" class="title">{{product.product_name}}</a>
+						<div class="price-wrap mt-2">
+							<span class="price">${{product.product_price}}</span>
+						</div> <!-- price-wrap.// -->
+					</div>
+	{% if  product.product_stock <= 0 %}
+	<h5>out of stock</h5>
+					{% else %}
+					<a href="{% url 'addCart' product.id  %}" class="btn btn-block btn-primary">Add to Cart </a>
+					{% endif %}
 
-			</figcaption>
-		</figure>
-	</div> <!-- col.// -->
-{%endfor%}
+				</figcaption>
+			</figure>
+		</div> <!-- col.// -->
+	{%endfor%}
+	{% else %}
+	<div class="text-center"><h2 >NO RESULTS TRY AGAIN</h2></div>
+	{% endif %}
 
 </div> <!-- row end.// -->
 

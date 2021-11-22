@@ -13,6 +13,9 @@ def _cart_id(request):
         # int(request.POST['product'])
     return cart
 def add_Cart(request,product_id):
+    color = request.GET['color']
+    size = request.GET['size']
+
     products = product.objects.get(id=product_id)
     try:
         cart = buskett.objects.get(cart_id = _cart_id(request))
