@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from store.models import product
+from store.models import product,variation
 from .models import  buskett ,busketItems
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -13,10 +13,17 @@ def _cart_id(request):
         # int(request.POST['product'])
     return cart
 def add_Cart(request,product_id):
-    color = request.GET['color']
-    size = request.GET['size']
-
     products = product.objects.get(id=product_id)
+    var_product =[]
+    if request.method == 'POST':
+        for key in request.POST:
+            value = request.POST[key]
+            try:
+                var = variation.objects.get(product=products, variation_category__iexact= key,variation_value__iexact=value)
+                var_product.append(var)
+            except:
+                pass
+
     try:
         cart = buskett.objects.get(cart_id = _cart_id(request))
     except buskett.DoesNotExist:
@@ -24,36 +31,64 @@ def add_Cart(request,product_id):
             cart_id=_cart_id(request)
         )
     cart.save()
-    try:
-        cart_item = busketItems.objects.get(product_busket_item=products,busket_item=cart)
+    is_cart_item_exists = busketItems.objects.filter(product_busket_item=products,busket_item=cart).exists()
+    if is_cart_item_exists:
+        cart_item = busketItems.objects.filter(product_busket_item=products,busket_item=cart)
+        ex_vr_list =[]
+        id = []
+        for itemm in  cart_item:
+            ex_vr = itemm.variations.all()
+            ex_vr_list.append(list(ex_vr))
+            id.append(itemm.id)
+        if  var_product in  ex_vr_list:
+            index = ex_vr_list.index(var_product)
+            item_id = id[index]
+            item = busketItems.objects.get(product_busket_item=products,id=item_id)
+            item.quantity += 1
+            item.save()
 
-        cart_item.quantity += 1
+        else:
+            item =  busketItems.objects.create(
+            product_busket_item=products,
+            busket_item=cart,
+            quantity = 1
+        )
+            if len(var_product) >0:
+                item.variations.clear()
+                item.variations.add(*var_product)
+            item.save()
 
-
-    except busketItems.DoesNotExist:
+    else :
         cart_item = busketItems.objects.create(
             product_busket_item=products,
             busket_item=cart,
             quantity = 1
         )
-    cart_item.save()
+        if len(var_product) >0:
+            cart_item.variations.clear()
+            cart_item.variations.add(*var_product)
+        cart_item.save()
     return redirect('busket')
 
-def remove_cart(request,product_id):
+def remove_cart(request,product_id,cart_id):
     cart = buskett.objects.get(cart_id=_cart_id(request))
     productt = get_object_or_404(product,id=product_id)
-    cartItem = busketItems.objects.get(product_busket_item=productt,busket_item=cart)
-    if cartItem.quantity > 1:
-        cartItem.quantity -= 1
-        cartItem.save()
-        return redirect('busket')
-    else:
-        cartItem.delete()
-        return redirect('busket')
-def remove_cart_item(request,product_id):
+    try:
+        cartItem = busketItems.objects.get(product_busket_item=productt,busket_item=cart,id=cart_id)
+        if cartItem.quantity > 1:
+            cartItem.quantity -= 1
+            cartItem.save()
+            return redirect('busket')
+        else:
+            cartItem.delete()
+            return redirect('busket')
+    except:
+        pass
+
+def remove_cart_item(request,product_id,cart_id):
     cart = buskett.objects.get(cart_id=_cart_id(request))
     productt = get_object_or_404(product, id=product_id)
-    cartItem = busketItems.objects.get(product_busket_item=productt, busket_item=cart)
+    cartItem = busketItems.objects.get(product_busket_item=productt, busket_item=cart,id=cart_id)
     cartItem.delete()
     return redirect('busket')
 
