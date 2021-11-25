@@ -1,6 +1,6 @@
 {% autoescape off%}
 Hi {{user.first_name}}
 please activate your account by the link below
-http://{{current_site}}{% url 'activate' uidb64=uid,token=token%}
+http://{{current_site}}{% url 'activate' uidb64=uid token=token %}
 if not you go to hill
 {% endautoescape %}

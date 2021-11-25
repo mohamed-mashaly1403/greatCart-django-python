@@ -142,5 +142,5 @@ MESSAGE_TAGS = {
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT =587
 EMAIL_HOST_USER = 'bedaya.td@gmail.com'
-EMAIL_HOST_PASSWORD = '14031981@Moh'
+EMAIL_HOST_PASSWORD = 'ybaertjismgakzxm'
 EMAIL_USE_TLS = True
