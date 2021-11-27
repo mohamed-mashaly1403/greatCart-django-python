@@ -1,6 +1,9 @@
 from django.db import models
 from store.models import product,variation
 
+from accounts.models import account
+
+
 class buskett(models.Model):
 	objects = models.Manager()
 
@@ -10,10 +13,10 @@ class buskett(models.Model):
 		return self.cart_id
 class busketItems(models.Model):
 	objects = models.Manager()
-
+	user = models.ForeignKey(account,on_delete=models.CASCADE,null=True)
 	product_busket_item = models.ForeignKey(product,on_delete=models.CASCADE)
 	variations = models.ManyToManyField(variation,blank=True)
-	busket_item = models.ForeignKey(buskett,on_delete=models.CASCADE)
+	busket_item = models.ForeignKey(buskett,on_delete=models.CASCADE,null=True)
 	quantity = models.IntegerField()
 	busketItems_is_active = models.BooleanField(default=True)
 	def sub_total(self):
