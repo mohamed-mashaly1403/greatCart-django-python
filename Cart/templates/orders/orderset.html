@@ -1,0 +1,9 @@
+{% autoescape off%}
+Hi {{user.first_name}}
+Congratulation your order has been set and you will recieve product soon
+order no.:{{order_number.order_number}}
+total amount: {{order_number.total}}
+created date : {{order_number.created_at}}
+
+
+{% endautoescape %}
