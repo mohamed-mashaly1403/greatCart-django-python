@@ -38,6 +38,7 @@ class account(AbstractBaseUser):
     email = models.EmailField(max_length=100,unique=True)
     username = models.CharField(max_length=50)
     phone = models.CharField(max_length=20)
+    user_img = models.ImageField(upload_to="img/users", blank=True)
     joined_date = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now_add=True)
     is_superadmin = models.BooleanField(default=False)
