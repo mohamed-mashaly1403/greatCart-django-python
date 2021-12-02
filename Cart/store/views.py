@@ -1,12 +1,15 @@
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
-from store.models import product,RatingReview
+from store.models import product,RatingReview, ProductGallery
 from cat.models import cat
 from busket.models import busketItems,buskett
 from busket.views import _cart_id
 from django.core.paginator import EmptyPage,Paginator,PageNotAnInteger
 from django.db.models import Q
 from .form import RatingReviewForm
+
+
+from .models import ProductGallery
 from orders.models import orderPoduct
 
 
@@ -50,11 +53,13 @@ def product_details(request,cat_slug,product_slug):
     except (orderPoduct.DoesNotExist,TypeError):
         Orderproduct = None
     reviews = RatingReview.objects.filter(product_id=single.id,status=True)
+    product_gallery = ProductGallery.objects.filter(product_id = single.id)
     context ={'single':single,
               'stock': stock,
               'inCart':inCart,
               'Orderproduct':Orderproduct,
-              'reviews':reviews
+              'reviews':reviews,
+              'product_gallery':product_gallery
               }
     return render(request,'store/product_details.html',context)
 
