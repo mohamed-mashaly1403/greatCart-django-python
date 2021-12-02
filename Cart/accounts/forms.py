@@ -1,5 +1,5 @@
 from django import forms
-from .models import account
+from .models import account,UserProfile
 class regForm(forms.ModelForm):
     password=forms.CharField(widget=forms.PasswordInput(attrs={'placeholder':'Enter Password'}))
     confirm_password=forms.CharField(widget=forms.PasswordInput(attrs={'placeholder':'Renter Password'}))
@@ -22,3 +22,22 @@ class regForm(forms.ModelForm):
         self.fields['phone'].widget.attrs['placeholder'] = 'phone'
         for field in self.fields:
             self.fields[field].widget.attrs['class']='form-control'
+class UserForm(forms.ModelForm):
+    user_img = forms.ImageField(required=False,error_messages = {'invalid':("Image files only")},widget=forms.FileInput)
+    class  Meta:
+        model = account
+        fields = ['first_name','last_name','phone','user_img']
+    def __init__(self, *args, **kwargs):
+        super(UserForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs['class']='form-control'
+
+class UserProfileForm(forms.ModelForm):
+    class  Meta:
+        model = UserProfile
+        fields = ['address_line_1','address_line_2','city','state','country']
+    def __init__(self, *args, **kwargs):
+        super(UserProfileForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs['class']='form-control'
+

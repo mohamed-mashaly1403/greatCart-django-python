@@ -16,6 +16,9 @@
 		</li>
     </ul>
     <ul class="navbar-nav">
+		{%if user.is_authenticated%}
+		<img width="50" height="50" class="rounded-circle mb-2"   src="{{user.user_img.url}}" alt="user picture">
+		{% endif %}
 		<li><a href="#" class="nav-link"> <i class="fa fa-envelope"></i> Email </a></li>
 		<li><a href="#" class="nav-link"> <i class="fa fa-phone"></i> Call us </a></li>
 	</ul> <!-- list-inline //  -->

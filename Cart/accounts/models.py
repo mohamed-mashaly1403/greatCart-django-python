@@ -32,6 +32,8 @@ class account_manger(BaseUserManager):
         return user
 
 
+
+
 class account(AbstractBaseUser):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
@@ -54,6 +56,22 @@ class account(AbstractBaseUser):
         return self.is_admin
     def has_module_perms(self,add_label):
         return True
+
+    @property
+    def image_url(self):
+        if self.user_img and hasattr(self.user_img, 'url'):
+            return self.user_img.url
+class UserProfile(models.Model):
+    user = models.OneToOneField(account,on_delete=models.CASCADE)
+    address_line_1 = models.CharField(max_length=100,blank=True)
+    address_line_2 = models.CharField(max_length=100,blank=True)
+    city = models.CharField(max_length=20,blank=True)
+    state = models.CharField(max_length=20,blank=True)
+    country = models.CharField(max_length=20,blank=True)
+    def __str__(self):
+        return self.user.first_name
+    def full_adress(self):
+        return f'{self.address_line_1} {self.address_line_1}'
 
 
 # Create your models here.
