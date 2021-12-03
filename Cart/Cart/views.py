@@ -9,6 +9,7 @@ def home(request):
     reviews =None
     for Product in products:
         reviews = RatingReview.objects.filter(product_id=Product.id,status=True)
+        # do nothing
 
     context = {
         'products':products,
